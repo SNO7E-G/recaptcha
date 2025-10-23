@@ -69,13 +69,4 @@ class Curl
     {
         return curl_exec($ch);
     }
-
-    /**
-     * @see http://php.net/curl_close
-     * @param resource $ch
-     */
-    public function close($ch)
-    {
-        curl_close($ch);
-    }
 }
