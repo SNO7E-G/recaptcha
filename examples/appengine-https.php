@@ -1,8 +1,11 @@
 <?php
+
 /**
- * BSD 3-Clause License
+ * BSD 3-Clause License.
+ *
  * @copyright (c) 2019, Google Inc.
- * @link https://www.google.com/recaptcha
+ *
+ * @see https://www.google.com/recaptcha
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,11 +35,11 @@
 
 // Redirect to HTTPS by default (for AppEngine)
 if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-    if ($_SERVER['HTTP_X_FORWARDED_PROTO'] === 'http') {
+    if ('http' === $_SERVER['HTTP_X_FORWARDED_PROTO']) {
         header('HTTP/1.1 301 Moved Permanently');
         header('Location: https://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI']);
+
         exit(0);
-    } else {
-        header('Strict-Transport-Security: max-age=63072000; includeSubDomains; preload');
     }
+    header('Strict-Transport-Security: max-age=63072000; includeSubDomains; preload');
 }

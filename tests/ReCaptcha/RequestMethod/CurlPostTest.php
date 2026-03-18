@@ -1,10 +1,13 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
- * @link https://www.google.com/recaptcha
+ *
+ * @see https://www.google.com/recaptcha
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,10 +37,15 @@
 
 namespace ReCaptcha\RequestMethod;
 
+use PHPUnit\Framework\TestCase;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
-use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class CurlPostTest extends TestCase
 {
     protected function setUp(): void
@@ -51,21 +59,24 @@ class CurlPostTest extends TestCase
 
     public function testSubmit()
     {
-        $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
+        $curl = $this->getMockBuilder(Curl::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
         $curl->expects($this->once())
-                ->method('init')
-                ->willReturn(new \stdClass());
+            ->method('init')
+            ->willReturn(new \stdClass())
+        ;
         $curl->expects($this->once())
-                ->method('setoptArray')
-                ->willReturn(true);
+            ->method('setoptArray')
+            ->willReturn(true)
+        ;
         $curl->expects($this->once())
                 ->method('exec')
                 ->willReturn('RESPONSEBODY');
 
         $pc = new CurlPost($curl);
-        $response = $pc->submit(new RequestParameters("secret", "response"));
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
@@ -73,42 +84,48 @@ class CurlPostTest extends TestCase
     {
         $url = 'OVERRIDE';
 
-        $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
+        $curl = $this->getMockBuilder(Curl::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
         $curl->expects($this->once())
-                ->method('init')
-                ->with($url)
-                ->willReturn(new \stdClass());
+            ->method('init')
+            ->with($url)
+            ->willReturn(new \stdClass())
+        ;
         $curl->expects($this->once())
-                ->method('setoptArray')
-                ->willReturn(true);
+            ->method('setoptArray')
+            ->willReturn(true)
+        ;
         $curl->expects($this->once())
                 ->method('exec')
                 ->willReturn('RESPONSEBODY');
 
         $pc = new CurlPost($curl, $url);
-        $response = $pc->submit(new RequestParameters("secret", "response"));
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
     public function testConnectionFailureReturnsError()
     {
-        $curl = $this->getMockBuilder(\ReCaptcha\RequestMethod\Curl::class)
+        $curl = $this->getMockBuilder(Curl::class)
             ->disableOriginalConstructor()
-            ->getMock();
+            ->getMock()
+        ;
         $curl->expects($this->once())
-                ->method('init')
-                ->willReturn(new \stdClass());
+            ->method('init')
+            ->willReturn(new \stdClass())
+        ;
         $curl->expects($this->once())
-                ->method('setoptArray')
-                ->willReturn(true);
+            ->method('setoptArray')
+            ->willReturn(true)
+        ;
         $curl->expects($this->once())
                 ->method('exec')
                 ->willReturn(false);
 
         $pc = new CurlPost($curl);
-        $response = $pc->submit(new RequestParameters("secret", "response"));
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
 }
