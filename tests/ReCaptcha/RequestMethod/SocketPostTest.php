@@ -118,7 +118,7 @@ class SocketPostTest extends TestCase
         ;
         $socket->expects($this->once())
             ->method('fgets')
-            ->willReturn('HTTP/1.0 500 NOPEn\\nBOBBINS')
+            ->willReturn('HTTP/1.0 500 NOPEn\nBOBBINS')
         ;
         $socket->expects($this->exactly(2))
             ->method('feof')
