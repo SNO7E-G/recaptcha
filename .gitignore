@@ -1,4 +1,5 @@
-.phpunit.cache/
+/.php-cs-fixer.cache
+/.phpunit.cache/
 /build/
 /examples/config.php
 /vendor/
