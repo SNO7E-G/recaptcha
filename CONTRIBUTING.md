@@ -30,8 +30,7 @@ composer run-script lint
 composer run-script test
 ```
 
-These are run automatically by [Travis
-CI](https://travis-ci.org/google/recaptcha) against your Pull Request, but it's
+These are run automatically by GitHub Actions against your Pull Request, but it's
 a good idea to run them locally before submission to avoid getting things
 bounced back. That said, tests can be a little daunting so feel free to submit
 your PR and ask for help.
