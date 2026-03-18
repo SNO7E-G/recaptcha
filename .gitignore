@@ -1,8 +1,4 @@
-/.php_cs.cache
-/.phpunit.result.cache
 .phpunit.cache/
-/build
-/composer.lock
+/build/
 /examples/config.php
-/nbproject/private/
 /vendor/

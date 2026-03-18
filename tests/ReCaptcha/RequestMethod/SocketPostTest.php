@@ -55,7 +55,7 @@ class SocketPostTest extends TestCase
                 ->willReturn("HTTP/1.0 200 OK\n\nRESPONSEBODY");
         $socket->expects($this->exactly(2))
                 ->method('feof')
-                ->will($this->onConsecutiveCalls(false, true));
+                ->willReturnOnConsecutiveCalls(false, true);
         $socket->expects($this->once())
                 ->method('fclose')
                 ->willReturn(true);
@@ -82,7 +82,7 @@ class SocketPostTest extends TestCase
                 ->willReturn("HTTP/1.0 200 OK\n\nRESPONSEBODY");
         $socket->expects($this->exactly(2))
                 ->method('feof')
-                ->will($this->onConsecutiveCalls(false, true));
+                ->willReturnOnConsecutiveCalls(false, true);
         $socket->expects($this->once())
                 ->method('fclose')
                 ->willReturn(true);
@@ -107,7 +107,7 @@ class SocketPostTest extends TestCase
                 ->willReturn("HTTP/1.0 500 NOPEn\\nBOBBINS");
         $socket->expects($this->exactly(2))
                 ->method('feof')
-                ->will($this->onConsecutiveCalls(false, true));
+                ->willReturnOnConsecutiveCalls(false, true);
         $socket->expects($this->once())
                 ->method('fclose')
                 ->willReturn(true);

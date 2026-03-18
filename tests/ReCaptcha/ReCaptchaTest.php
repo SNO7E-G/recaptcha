@@ -35,12 +35,11 @@
 namespace ReCaptcha;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ReCaptchaTest extends TestCase
 {
-    /**
-     * @dataProvider invalidSecretProvider
-     */
+    #[DataProvider('invalidSecretProvider')]
     public function testExceptionThrownOnInvalidSecret($invalid)
     {
         $this->expectException(\RuntimeException::class);
@@ -76,7 +75,7 @@ class ReCaptchaTest extends TestCase
             ->with($this->callback(function ($params) {
                 return true;
             }))
-            ->will($this->returnValue($responseJson));
+            ->willReturn($responseJson);
         return $method;
     }
 

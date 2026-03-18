@@ -35,8 +35,9 @@
 namespace ReCaptcha;
 
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
-class RequestParametersTest extends Testcase
+class RequestParametersTest extends TestCase
 {
     public static function provideValidData()
     {
@@ -50,18 +51,14 @@ class RequestParametersTest extends Testcase
         );
     }
 
-    /**
-     * @dataProvider provideValidData
-     */
+    #[DataProvider('provideValidData')]
     public function testToArray($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
     {
         $params = new RequestParameters($secret, $response, $remoteIp, $version);
         $this->assertEquals($params->toArray(), $expectedArray);
     }
 
-    /**
-     * @dataProvider provideValidData
-     */
+    #[DataProvider('provideValidData')]
     public function testToQueryString($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
     {
         $params = new RequestParameters($secret, $response, $remoteIp, $version);
