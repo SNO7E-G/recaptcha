@@ -42,9 +42,7 @@ class SocketPostTest extends TestCase
 {
     public function testSubmitSuccess()
     {
-        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $socket = $this->createMock(\ReCaptcha\RequestMethod\Socket::class);
         $socket->expects($this->once())
                 ->method('fsockopen')
                 ->willReturn(true);
@@ -67,9 +65,7 @@ class SocketPostTest extends TestCase
 
     public function testOverrideSiteVerifyUrl()
     {
-        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $socket = $this->createMock(\ReCaptcha\RequestMethod\Socket::class);
         $socket->expects($this->once())
                 ->method('fsockopen')
                 ->with('ssl://over.ride', 443, 0, '', 30)
@@ -94,9 +90,7 @@ class SocketPostTest extends TestCase
 
     public function testSubmitBadResponse()
     {
-        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $socket = $this->createMock(\ReCaptcha\RequestMethod\Socket::class);
         $socket->expects($this->once())
                 ->method('fsockopen')
                 ->willReturn(true);
@@ -119,9 +113,7 @@ class SocketPostTest extends TestCase
 
     public function testConnectionFailureReturnsError()
     {
-        $socket = $this->getMockBuilder(\ReCaptcha\RequestMethod\Socket::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+        $socket = $this->createMock(\ReCaptcha\RequestMethod\Socket::class);
         $socket->expects($this->once())
                 ->method('fsockopen')
                 ->willReturn(false);

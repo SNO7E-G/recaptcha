@@ -67,14 +67,8 @@ class ReCaptchaTest extends TestCase
 
     private function getMockRequestMethod($responseJson)
     {
-        $method = $this->getMockBuilder(\ReCaptcha\RequestMethod::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-        $method->expects($this->any())
-            ->method('submit')
-            ->with($this->callback(function ($params) {
-                return true;
-            }))
+        $method = $this->createStub(\ReCaptcha\RequestMethod::class);
+        $method->method('submit')
             ->willReturn($responseJson);
         return $method;
     }
