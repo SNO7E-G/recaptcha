@@ -1,10 +1,13 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
- * @link https://www.google.com/recaptcha
+ *
+ * @see https://www.google.com/recaptcha
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,14 +37,19 @@
 
 namespace ReCaptcha\RequestMethod;
 
+use PHPUnit\Framework\TestCase;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestParameters;
-use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class PostTest extends TestCase
 {
-    public static $assert = null;
-    protected $parameters = null;
+    public static $assert;
+    protected $parameters;
     protected $runcount = 0;
 
     public function setUp(): void
@@ -57,7 +65,7 @@ class PostTest extends TestCase
     public function testHTTPContextOptions()
     {
         $req = new Post();
-        self::$assert = array($this, 'httpContextOptionsCallback');
+        self::$assert = [$this, 'httpContextOptionsCallback'];
         $req->submit($this->parameters);
         $this->assertEquals(1, $this->runcount, 'The assertion was ran');
     }
@@ -65,7 +73,7 @@ class PostTest extends TestCase
     public function testSSLContextOptions()
     {
         $req = new Post();
-        self::$assert = array($this, 'sslContextOptionsCallback');
+        self::$assert = [$this, 'sslContextOptionsCallback'];
         $req->submit($this->parameters);
         $this->assertEquals(1, $this->runcount, 'The assertion was ran');
     }
@@ -73,7 +81,7 @@ class PostTest extends TestCase
     public function testOverrideVerifyUrl()
     {
         $req = new Post('https://over.ride/some/path');
-        self::$assert = array($this, 'overrideUrlOptions');
+        self::$assert = [$this, 'overrideUrlOptions'];
         $req->submit($this->parameters);
         $this->assertEquals(1, $this->runcount, 'The assertion was ran');
     }
@@ -81,7 +89,7 @@ class PostTest extends TestCase
     public function testConnectionFailureReturnsError()
     {
         $req = new Post('https://bad.connection/');
-        self::$assert = array($this, 'connectionFailureResponse');
+        self::$assert = [$this, 'connectionFailureResponse'];
         $response = $req->submit($this->parameters);
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
@@ -90,15 +98,16 @@ class PostTest extends TestCase
     {
         return false;
     }
+
     public function overrideUrlOptions(array $args)
     {
-        $this->runcount++;
+        ++$this->runcount;
         $this->assertEquals('https://over.ride/some/path', $args[0]);
     }
 
     public function httpContextOptionsCallback(array $args)
     {
-        $this->runcount++;
+        ++$this->runcount;
         $this->assertCommonOptions($args);
 
         $options = stream_context_get_options($args[2]);
@@ -116,7 +125,7 @@ class PostTest extends TestCase
 
     public function sslContextOptionsCallback(array $args)
     {
-        $this->runcount++;
+        ++$this->runcount;
         $this->assertCommonOptions($args);
 
         $options = stream_context_get_options($args[2]);
@@ -139,6 +148,7 @@ function file_get_contents()
     if (PostTest::$assert) {
         return call_user_func(PostTest::$assert, func_get_args());
     }
+
     // Since we can't represent maxlen in userland...
     return call_user_func_array('file_get_contents', func_get_args());
 }

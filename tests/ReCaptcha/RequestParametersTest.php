@@ -1,10 +1,13 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
- * @link https://www.google.com/recaptcha
+ *
+ * @see https://www.google.com/recaptcha
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,37 +37,39 @@
 
 namespace ReCaptcha;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-class RequestParametersTest extends Testcase
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
+class RequestParametersTest extends TestCase
 {
-    public static function provideValidData()
-    {
-        return array(
-            array('SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',
-                array('secret' => 'SECRET', 'response' => 'RESPONSE', 'remoteip' => 'REMOTEIP', 'version' => 'VERSION'),
-                'secret=SECRET&response=RESPONSE&remoteip=REMOTEIP&version=VERSION'),
-            array('SECRET', 'RESPONSE', null, null,
-                array('secret' => 'SECRET', 'response' => 'RESPONSE'),
-                'secret=SECRET&response=RESPONSE'),
-        );
-    }
-
-    /**
-     * @dataProvider provideValidData
-     */
+    #[DataProvider('provideValidData')]
     public function testToArray($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
     {
         $params = new RequestParameters($secret, $response, $remoteIp, $version);
         $this->assertEquals($params->toArray(), $expectedArray);
     }
 
-    /**
-     * @dataProvider provideValidData
-     */
+    #[DataProvider('provideValidData')]
     public function testToQueryString($secret, $response, $remoteIp, $version, $expectedArray, $expectedQuery)
     {
         $params = new RequestParameters($secret, $response, $remoteIp, $version);
         $this->assertEquals($params->toQueryString(), $expectedQuery);
+    }
+
+    public static function provideValidData()
+    {
+        return [
+            ['SECRET', 'RESPONSE', 'REMOTEIP', 'VERSION',
+                ['secret' => 'SECRET', 'response' => 'RESPONSE', 'remoteip' => 'REMOTEIP', 'version' => 'VERSION'],
+                'secret=SECRET&response=RESPONSE&remoteip=REMOTEIP&version=VERSION'],
+            ['SECRET', 'RESPONSE', null, null,
+                ['secret' => 'SECRET', 'response' => 'RESPONSE'],
+                'secret=SECRET&response=RESPONSE'],
+        ];
     }
 }
