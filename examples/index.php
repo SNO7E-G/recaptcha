@@ -1,8 +1,10 @@
 <?php
 /**
- * BSD 3-Clause License
+ * BSD 3-Clause License.
+ *
  * @copyright (c) 2019, Google Inc.
- * @link https://www.google.com/recaptcha
+ *
+ * @see https://www.google.com/recaptcha
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +32,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-require __DIR__ . '/appengine-https.php';
+require __DIR__.'/appengine-https.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">

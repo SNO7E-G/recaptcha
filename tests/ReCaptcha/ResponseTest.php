@@ -1,10 +1,13 @@
 <?php
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
  * BSD 3-Clause License
+ *
  * @copyright (c) 2019, Google Inc.
- * @link https://www.google.com/recaptcha
+ *
+ * @see https://www.google.com/recaptcha
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,9 +37,14 @@
 
 namespace ReCaptcha;
 
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class ResponseTest extends TestCase
 {
     #[DataProvider('provideJson')]
@@ -54,48 +62,48 @@ class ResponseTest extends TestCase
 
     public static function provideJson()
     {
-        return array(
-            array(
+        return [
+            [
                 '{"success": true}',
-                true, array(), null, null, null, null, null,
-            ),
-            array(
+                true, [], null, null, null, null, null,
+            ],
+            [
                 '{"success": true, "hostname": "google.com"}',
-                true, array(), 'google.com', null, null, null, null,
-            ),
-            array(
+                true, [], 'google.com', null, null, null, null,
+            ],
+            [
                 '{"success": false, "error-codes": ["test"]}',
-                false, array('test'), null, null, null, null, null,
-            ),
-            array(
+                false, ['test'], null, null, null, null, null,
+            ],
+            [
                 '{"success": false, "error-codes": ["test"], "hostname": "google.com"}',
-                false, array('test'), 'google.com', null, null, null, null,
-            ),
-            array(
+                false, ['test'], 'google.com', null, null, null, null,
+            ],
+            [
                 '{"success": false, "error-codes": ["test"], "hostname": "google.com", "challenge_ts": "timestamp", "apk_package_name": "apk", "score": "0.5", "action": "action"}',
-                false, array('test'), 'google.com', 'timestamp', 'apk', 0.5, 'action',
-            ),
-            array(
+                false, ['test'], 'google.com', 'timestamp', 'apk', 0.5, 'action',
+            ],
+            [
                 '{"success": true, "error-codes": ["test"]}',
-                true, array(), null, null, null, null, null,
-            ),
-            array(
+                true, [], null, null, null, null, null,
+            ],
+            [
                 '{"success": true, "error-codes": ["test"], "hostname": "google.com"}',
-                true, array(), 'google.com', null, null, null, null,
-            ),
-            array(
+                true, [], 'google.com', null, null, null, null,
+            ],
+            [
                 '{"success": false}',
-                false, array(ReCaptcha::E_UNKNOWN_ERROR), null, null, null, null, null,
-            ),
-            array(
+                false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
+            [
                 '{"success": false, "hostname": "google.com"}',
-                false, array(ReCaptcha::E_UNKNOWN_ERROR), 'google.com', null, null, null, null,
-            ),
-            array(
+                false, [ReCaptcha::E_UNKNOWN_ERROR], 'google.com', null, null, null, null,
+            ],
+            [
                 'BAD JSON',
-                false, array(ReCaptcha::E_INVALID_JSON), null, null, null, null, null,
-            ),
-        );
+                false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
+            ],
+        ];
     }
 
     public function testIsSuccess()
@@ -106,13 +114,13 @@ class ResponseTest extends TestCase
         $response = new Response(false);
         $this->assertFalse($response->isSuccess());
 
-        $response = new Response(true, array(), 'example.com');
+        $response = new Response(true, [], 'example.com');
         $this->assertEquals('example.com', $response->getHostName());
     }
 
     public function testGetErrorCodes()
     {
-        $errorCodes = array('test');
+        $errorCodes = ['test'];
         $response = new Response(true, $errorCodes);
         $this->assertEquals($errorCodes, $response->getErrorCodes());
     }
@@ -120,7 +128,7 @@ class ResponseTest extends TestCase
     public function testGetHostname()
     {
         $hostname = 'google.com';
-        $errorCodes = array();
+        $errorCodes = [];
         $response = new Response(true, $errorCodes, $hostname);
         $this->assertEquals($hostname, $response->getHostname());
     }
@@ -128,44 +136,44 @@ class ResponseTest extends TestCase
     public function testGetChallengeTs()
     {
         $timestamp = 'timestamp';
-        $errorCodes = array();
-        $response = new Response(true, array(), 'hostname', $timestamp);
+        $errorCodes = [];
+        $response = new Response(true, [], 'hostname', $timestamp);
         $this->assertEquals($timestamp, $response->getChallengeTs());
     }
 
     public function TestGetApkPackageName()
     {
         $apk = 'apk';
-        $response = new Response(true, array(), 'hostname', 'timestamp', 'apk');
+        $response = new Response(true, [], 'hostname', 'timestamp', 'apk');
         $this->assertEquals($apk, $response->getApkPackageName());
     }
 
     public function testGetScore()
     {
         $score = 0.5;
-        $response = new Response(true, array(), 'hostname', 'timestamp', 'apk', $score);
+        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', $score);
         $this->assertEquals($score, $response->getScore());
     }
 
     public function testGetAction()
     {
         $action = 'homepage';
-        $response = new Response(true, array(), 'hostname', 'timestamp', 'apk', '0.5', 'homepage');
+        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', '0.5', 'homepage');
         $this->assertEquals($action, $response->getAction());
     }
 
     public function testToArray()
     {
-        $response = new Response(true, array(), 'hostname', 'timestamp', 'apk', '0.5', 'homepage');
-        $expected = array(
+        $response = new Response(true, [], 'hostname', 'timestamp', 'apk', '0.5', 'homepage');
+        $expected = [
             'success' => true,
-            'error-codes' => array(),
+            'error-codes' => [],
             'hostname' => 'hostname',
             'challenge_ts' => 'timestamp',
             'apk_package_name' => 'apk',
             'score' => 0.5,
             'action' => 'homepage',
-        );
+        ];
         $this->assertEquals($expected, $response->toArray());
     }
 }
