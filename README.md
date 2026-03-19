@@ -43,7 +43,7 @@ stay with the 1.2 releases.
 
 ### Direct download
 
-Download the [ZIP file](https://github.com/google/recaptcha/archive/master.zip)
+Download the [ZIP file](https://github.com/google/recaptcha/archive/main.zip)
 and extract into your project. An autoloader script is provided in
 `src/autoload.php` which you can require into your script. For example:
 
