@@ -100,7 +100,6 @@ class CurlPost implements RequestMethod
         $this->curl->setoptArray($handle, $options);
 
         $response = $this->curl->exec($handle);
-        $this->curl->close($handle);
 
         if (false !== $response) {
             return $response;

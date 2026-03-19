@@ -75,9 +75,6 @@ class CurlPostTest extends TestCase
             ->method('exec')
             ->willReturn('RESPONSEBODY')
         ;
-        $curl->expects($this->once())
-            ->method('close')
-        ;
 
         $pc = new CurlPost($curl);
         $response = $pc->submit(new RequestParameters('secret', 'response'));
@@ -105,9 +102,6 @@ class CurlPostTest extends TestCase
             ->method('exec')
             ->willReturn('RESPONSEBODY')
         ;
-        $curl->expects($this->once())
-            ->method('close')
-        ;
 
         $pc = new CurlPost($curl, $url);
         $response = $pc->submit(new RequestParameters('secret', 'response'));
@@ -131,9 +125,6 @@ class CurlPostTest extends TestCase
         $curl->expects($this->once())
             ->method('exec')
             ->willReturn(false)
-        ;
-        $curl->expects($this->once())
-            ->method('close')
         ;
 
         $pc = new CurlPost($curl);
