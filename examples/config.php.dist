@@ -1,8 +1,11 @@
 <?php
+
 /**
- * BSD 3-Clause License
+ * BSD 3-Clause License.
+ *
  * @copyright (c) 2019, Google Inc.
- * @link https://www.google.com/recaptcha
+ *
+ * @see https://www.google.com/recaptcha
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,16 +34,16 @@
  */
 
 return [
-  'v2-standard' => [
-    'site' => '',
-    'secret' => '',
-  ],
-  'v2-invisible' => [
-    'site' => '',
-    'secret' => '',
-  ],
-  'v3' => [
-    'site' => '',
-    'secret' => '',
-  ],
+    'v2-standard' => [
+        'site' => '',
+        'secret' => '',
+    ],
+    'v2-invisible' => [
+        'site' => '',
+        'secret' => '',
+    ],
+    'v3' => [
+        'site' => '',
+        'secret' => '',
+    ],
 ];
