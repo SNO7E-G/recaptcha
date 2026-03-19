@@ -47,7 +47,7 @@ class ReCaptcha
      *
      * @var string
      */
-    public const VERSION = 'php_1.4.0';
+    public const VERSION = 'php_1.4.1';
 
     /**
      * URL for reCAPTCHA siteverify API.
