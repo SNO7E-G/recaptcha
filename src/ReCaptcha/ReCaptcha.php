@@ -172,7 +172,14 @@ class ReCaptcha
         }
 
         $this->secret = $secret;
-        $this->requestMethod = (is_null($requestMethod)) ? new RequestMethod\Post() : $requestMethod;
+
+        if (!is_null($requestMethod)) {
+            $this->requestMethod = $requestMethod;
+        } elseif (function_exists('curl_version')) {
+            $this->requestMethod = new RequestMethod\CurlPost();
+        } else {
+            $this->requestMethod = new RequestMethod\Post();
+        }
     }
 
     /**

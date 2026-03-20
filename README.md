@@ -122,6 +122,43 @@ if ($resp->isSuccess()) {
 You can find the constants for the libraries error codes in the `ReCaptcha`
 class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`
 
+### Alternate request methods
+
+**Note:** As of version 1.4.2, the default behavior has changed.
+
+By default, the library will attempt to use [cURL](https://secure.php.net/curl) to make the
+POST request to the reCAPTCHA service. This is handled by the
+[`RequestMethod\CurlPost`](./src/ReCaptcha/RequestMethod/CurlPost.php) class.
+If cURL is not available, it will fall back to using
+[`stream_context_create()`](https://secure.php.net/stream_context_create) and
+[`file_get_contents()`](https://secure.php.net/file_get_contents) via the
+[`RequestMethod\Post`](./src/ReCaptcha/RequestMethod/Post.php) class.
+
+To keep the previous behavior of always using `file_get_contents()` regardless of cURL's availability, you can explicitly configure it:
+
+```php
+<?php
+$recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\Post());
+```
+
+You may need to use other methods for making requests in your environment. The
+[`ReCaptcha`](./src/ReCaptcha/ReCaptcha.php) class allows an optional
+[`RequestMethod`](./src/ReCaptcha/RequestMethod.php) instance to configure this.
+For example, if you want to force the use of [cURL](https://secure.php.net/curl) you
+can do this:
+
+```php
+<?php
+$recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\CurlPost());
+```
+
+Alternatively, you can also use a [socket](https://secure.php.net/fsockopen):
+
+```php
+<?php
+$recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
+```
+
 For more details on usage and structure, see [ARCHITECTURE](ARCHITECTURE.md).
 
 ### Examples

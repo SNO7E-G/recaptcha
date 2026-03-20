@@ -16,31 +16,10 @@ if ($resp->isSuccess()) {
 }
 ```
 
-By default, this will use the
-[`stream_context_create()`](https://secure.php.net/stream_context_create) and
-[`file_get_contents()`](https://secure.php.net/file_get_contents) to make a POST
-request to the reCAPTCHA service. This is handled by the
-[`RequestMethod\Post`](./src/ReCaptcha/RequestMethod/Post.php) class.
-
-## Alternate request methods
-
-You may need to use other methods for making requests in your environment. The
-[`ReCaptcha`](./src/ReCaptcha/ReCaptcha.php) class allows an optional
-[`RequestMethod`](./src/ReCaptcha/RequestMethod.php) instance to configure this.
-For example, if you want to use [cURL](https://secure.php.net/curl) instead you
-can do this:
-
-```php
-<?php
-$recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\CurlPost());
-```
-
-Alternatively, you can also use a [socket](https://secure.php.net/fsockopen):
-
-```php
-<?php
-$recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\SocketPost());
-```
+The `ReCaptcha` class automatically chooses a method to communicate with the
+reCAPTCHA service based on your server's capabilities. See the
+[Alternate request methods](README.md#alternate-request-methods) section in the
+README for more details.
 
 ## Adding new request methods
 
