@@ -73,6 +73,20 @@ class ReCaptchaTest extends TestCase
         $this->assertEquals([Recaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
     }
 
+    public function testDefaultRequestMethod()
+    {
+        $rc = new ReCaptcha('secret');
+        $reflection = new \ReflectionClass($rc);
+        $property = $reflection->getProperty('requestMethod');
+        $requestMethod = $property->getValue($rc);
+
+        if (function_exists('curl_version')) {
+            $this->assertInstanceOf(RequestMethod\CurlPost::class, $requestMethod);
+        } else {
+            $this->assertInstanceOf(RequestMethod\Post::class, $requestMethod);
+        }
+    }
+
     public function testVerifyReturnsResponse()
     {
         $method = $this->getMockRequestMethod('{"success": true}');
