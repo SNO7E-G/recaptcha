@@ -7,3 +7,4 @@
 /ARCHITECTURE.md export-ignore
 /CONTRIBUTING.md export-ignore
 /phpunit.xml.dist export-ignore
+/.php-cs-fixer.dist.php export-ignore
