@@ -90,7 +90,9 @@ The following methods are available:
 
 - `setExpectedHostname($hostname)`: ensures the hostname matches. You must do
   this if you have disabled "Domain/Package Name Validation" for your
-  credentials.
+  credentials. **Note:** if you need to validate against multiple hostnames,
+  do not use this method. Instead, check the `$resp->getHostname()` against
+  your list of allowed hostnames after calling `verify()`.
 - `setExpectedApkPackageName($apkPackageName)`: if you're verifying a response
   from an Android app. Again, you must do this if you have disabled
   "Domain/Package Name Validation" for your credentials.
