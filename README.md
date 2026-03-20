@@ -9,7 +9,7 @@ This is a PHP library that wraps up the server-side verification step required
 to process responses from the reCAPTCHA service. This client supports both v2
 and v3.
 
-- reCAPTCHA: https://www.google.com/recaptcha
+- reCAPTCHA: https://cloud.google.com/security/products/recaptcha
 - This repo: https://github.com/google/recaptcha
 - Hosted demo: https://recaptcha-demo.appspot.com/
 - Version: 1.4.1
@@ -59,8 +59,7 @@ own autoloader or require the needed files directly in your code.
 ## Usage
 
 First obtain the appropriate keys for the type of reCAPTCHA you wish to
-integrate for v2 at https://www.google.com/recaptcha/admin or v3 at
-https://g.co/recaptcha/v3.
+integrate at https://www.google.com/recaptcha/admin.
 
 Then follow the [integration guide on the developer
 site](https://developers.google.com/recaptcha/intro) to add the reCAPTCHA
