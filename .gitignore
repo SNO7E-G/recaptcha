@@ -1,6 +1,6 @@
 /.php-cs-fixer.cache
 /.phpunit.cache/
+/.worktrees/
 /build/
 /examples/config.php
 /vendor/
-/.worktrees/
