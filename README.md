@@ -2,10 +2,8 @@
 
 
 [![Latest stable version](https://poser.pugx.org/google/recaptcha/v/stable.svg)](https://packagist.org/packages/google/recaptcha)
-[![Latest unstable version](https://poser.pugx.org/google/recaptcha/v/unstable.svg)](https://packagist.org/packages/google/recaptcha)
 [![PHP version required](https://poser.pugx.org/google/recaptcha/require/php)](https://packagist.org/packages/google/recaptcha)
 [![Code coverage](https://coveralls.io/repos/github/google/recaptcha/badge.svg)](https://coveralls.io/github/google/recaptcha)
-[![Github Actions build](https://github.com/google/recaptcha/workflows/Test/badge.svg)](https://packagist.org/packages/google/recaptcha)
 [![Total downloads](https://poser.pugx.org/google/recaptcha/downloads.svg)](https://packagist.org/packages/google/recaptcha)
 [![License](https://poser.pugx.org/google/recaptcha/license.svg)](https://packagist.org/packages/google/recaptcha)
 
