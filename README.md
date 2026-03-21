@@ -186,3 +186,28 @@ project](https://cloud.google.com/appengine/docs/flexible/php/download).
 
 No one ever has enough engineers, so we're very happy to accept contributions
 via Pull Requests. For details, see [CONTRIBUTING](CONTRIBUTING.md)
+
+To set up your local checkout, install the dependencies:
+
+```bash
+composer install
+```
+
+If you add new dependencies to the project, make sure you commit the lock file:
+
+```bash
+composer update
+git add composer.json composer.lock
+```
+
+Before committing code, make sure it meets the formatting standard:
+
+```bash
+composer lint-fix
+```
+
+Run the tests before submitting. Make sure you add or update tests to cover any changes you make:
+
+```bash
+composer run test
+```
