@@ -3,7 +3,7 @@
 
 [![Latest stable version](https://poser.pugx.org/google/recaptcha/v/stable.svg)](https://packagist.org/packages/google/recaptcha)
 [![PHP version required](https://poser.pugx.org/google/recaptcha/require/php)](https://packagist.org/packages/google/recaptcha)
-[![Code coverage](https://coveralls.io/repos/github/google/recaptcha/badge.svg)](https://coveralls.io/github/google/recaptcha)
+[![Coverage Status](https://coveralls.io/repos/github/google/recaptcha/badge.svg?branch=main)](https://coveralls.io/github/google/recaptcha?branch=main)
 [![Total downloads](https://poser.pugx.org/google/recaptcha/downloads.svg)](https://packagist.org/packages/google/recaptcha)
 [![License](https://poser.pugx.org/google/recaptcha/license.svg)](https://packagist.org/packages/google/recaptcha)
 
