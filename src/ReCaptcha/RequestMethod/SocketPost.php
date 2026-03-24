@@ -83,6 +83,10 @@ class SocketPost implements RequestMethod
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
+        if (false === stream_set_timeout($handle, 60)) {
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        }
+
         $content = $params->toQueryString();
 
         $request = 'POST '.$urlParsed['path']." HTTP/1.0\r\n";

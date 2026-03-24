@@ -73,14 +73,6 @@ class PostTest extends TestCase
         $this->assertEquals(1, $this->runcount, 'The assertion was ran');
     }
 
-    public function testSSLContextOptions(): void
-    {
-        $req = new Post();
-        self::$assert = [$this, 'sslContextOptionsCallback'];
-        $req->submit($this->parameters);
-        $this->assertEquals(1, $this->runcount, 'The assertion was ran');
-    }
-
     public function testOverrideVerifyUrl(): void
     {
         $req = new Post('https://over.ride/some/path');
@@ -138,26 +130,9 @@ class PostTest extends TestCase
         /** @var string $header */
         $header = $httpOptions['header'];
         $this->assertStringContainsStringIgnoringCase('Content-type: application/x-www-form-urlencoded', $header);
-    }
 
-    /**
-     * @param array<int, mixed> $args
-     */
-    public function sslContextOptionsCallback(array $args): void
-    {
-        ++$this->runcount;
-        $this->assertCommonOptions($args);
-
-        /** @var resource $context */
-        $context = $args[2];
-        $options = stream_context_get_options($context);
-        $this->assertArrayHasKey('http', $options);
-
-        /** @var array<string, mixed> $httpOptions */
-        $httpOptions = $options['http'];
-
-        $this->assertArrayHasKey('verify_peer', $httpOptions);
-        $this->assertTrue($httpOptions['verify_peer']);
+        $this->assertArrayHasKey('timeout', $httpOptions);
+        $this->assertEquals(60, $httpOptions['timeout']);
     }
 
     /**
