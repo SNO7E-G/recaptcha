@@ -66,11 +66,11 @@ header(
 );
 
 // Register API keys at https://www.google.com/recaptcha/admin
-$siteKey = '';
-$secret = '';
+$siteKey = getenv('RECAPTCHA_V3_SITE') ?: '';
+$secret = getenv('RECAPTCHA_V3_SECRET') ?: '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if (is_readable(__DIR__.'/config.php')) {
+if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {
     /** @var array{v3: array{site: string, secret: string}} $config */
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v3']['site'];

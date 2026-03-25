@@ -43,11 +43,11 @@ require __DIR__.'/appengine-https.php';
 require_once __DIR__.'/../vendor/autoload.php';
 
 // Register API keys at https://www.google.com/recaptcha/admin
-$siteKey = '';
-$secret = '';
+$siteKey = getenv('RECAPTCHA_V2_STANDARD_SITE') ?: '';
+$secret = getenv('RECAPTCHA_V2_STANDARD_SECRET') ?: '';
 
 // Copy the config.php.dist file to config.php and update it with your keys to run the examples
-if (is_readable(__DIR__.'/config.php')) {
+if (('' === $siteKey || '' === $secret) && is_readable(__DIR__.'/config.php')) {
     /** @var array{'v2-standard': array{site: string, secret: string}} $config */
     $config = include __DIR__.'/config.php';
     $siteKey = $config['v2-standard']['site'];
