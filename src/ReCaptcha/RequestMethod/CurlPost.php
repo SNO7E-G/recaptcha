@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -89,12 +91,16 @@ class CurlPost implements RequestMethod
         ];
         curl_setopt_array($handle, $options);
 
-        $response = curl_exec($handle);
+        try {
+            $response = curl_exec($handle);
 
-        if (is_string($response)) {
-            return $response;
+            if (is_string($response)) {
+                return $response;
+            }
+
+            return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
+        } finally {
+            curl_close($handle);
         }
-
-        return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
     }
 }
