@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -84,6 +86,14 @@ function curl_setopt_array(\stdClass $ch, array $options): bool
 function curl_exec(\stdClass $ch): bool|string
 {
     return CurlPostGlobalState::$execResponse;
+}
+
+/**
+ * Mock curl_close in the ReCaptcha\RequestMethod namespace.
+ */
+function curl_close(\stdClass $ch): void
+{
+    // no-op mock
 }
 
 /**

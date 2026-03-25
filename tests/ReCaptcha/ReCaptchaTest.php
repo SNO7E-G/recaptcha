@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * This is a PHP library that handles calling reCAPTCHA.
  *
@@ -90,6 +92,7 @@ class ReCaptchaTest extends TestCase
             [null],
             [new \stdClass()],
             [[]],
+            [0],
         ];
     }
 
@@ -109,7 +112,6 @@ class ReCaptchaTest extends TestCase
     {
         return [
             [''],
-            [0],
         ];
     }
 
