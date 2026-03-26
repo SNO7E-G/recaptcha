@@ -131,7 +131,8 @@ class constants, e.g. `ReCaptcha::E_HOSTNAME_MISMATCH`
 
 ### Alternate request methods
 
-**Note:** As of version 1.4.2, the default behavior has changed.
+> [!NOTE]
+> As of version 1.4.2, the default behavior has changed.
 
 By default, the library will attempt to use [cURL](https://secure.php.net/curl) to make the
 POST request to the reCAPTCHA service. This is handled by the
