@@ -203,10 +203,11 @@ composer update
 git add composer.json composer.lock
 ```
 
-Before committing code, make sure it meets the formatting standard:
+Before committing code, make sure it meets the quality and formatting standards:
 
 ```bash
-composer lint-fix
+composer run phpstan
+composer run lint-fix
 ```
 
 Run the tests before submitting. Make sure you add or update tests to cover any changes you make:
