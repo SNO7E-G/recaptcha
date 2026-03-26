@@ -182,6 +182,22 @@ class SocketPostTest extends TestCase
         $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
     }
 
+    public function testSubmitReturnsResponseWhenHttp11(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.1 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('RESPONSEBODY', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
+    }
+
     public function testStreamTimeoutFailureReturnsError(): void
     {
         SocketPostGlobalState::$streamSetTimeoutSuccess = false;
@@ -266,6 +282,35 @@ class SocketPostTest extends TestCase
     public function testStreamGetContentsReturnsFalse(): void
     {
         SocketPostGlobalState::$fgetsResponses = [];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
+    }
+
+    public function testBadResponseReturnsErrorWhenHttp11(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.1 500 Internal Server Error\r\n",
+            "\r\n",
+            'FAIL',
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
+    }
+
+    public function testBadResponseReturnsErrorWhenHttp2(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/2.0 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
 
         $sp = new SocketPost();
         $response = $sp->submit(new RequestParameters('secret', 'response'));
