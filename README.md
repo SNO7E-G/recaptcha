@@ -18,9 +18,9 @@ and v3.
 - Version: 1.4.2
 - License: BSD, see [LICENSE](LICENSE)
 
-> **⚠ NOTE: reCAPTCHA Enterprise** is supported via the [Google Cloud Recaptcha Enterprise for
+> [!IMPORTANT]
+> **reCAPTCHA Enterprise** is supported via the [Google Cloud Recaptcha Enterprise for
 PHP client](https://docs.cloud.google.com/php/docs/reference/cloud-recaptcha-enterprise/).
-
 
 ## Installation
 
