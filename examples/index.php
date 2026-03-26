@@ -31,8 +31,6 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
-require __DIR__.'/appengine-https.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +73,3 @@ require __DIR__.'/appengine-https.php';
     </li>
   </ul>
 </main>
-
-<!-- Google Analytics - just ignore this -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-123057962-1"></script>
-<script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'UA-123057962-1');</script>
