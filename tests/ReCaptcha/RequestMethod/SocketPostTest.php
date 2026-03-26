@@ -287,4 +287,18 @@ class SocketPostTest extends TestCase
 
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
     }
+
+    public function testBadResponseReturnsErrorWhenHttp11(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.1 500 Internal Server Error\r\n",
+            "\r\n",
+            'FAIL',
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_BAD_RESPONSE.'"]}', $response);
+    }
 }
