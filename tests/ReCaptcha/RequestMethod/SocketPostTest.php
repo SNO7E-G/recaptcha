@@ -182,6 +182,21 @@ class SocketPostTest extends TestCase
         $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
     }
 
+    public function testSubmitReturnsResponseWhenHttp11(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.1 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
+
+        $sp = new SocketPost();
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+        $this->assertEquals('RESPONSEBODY', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
+    }
+
     public function testStreamTimeoutFailureReturnsError(): void
     {
         SocketPostGlobalState::$streamSetTimeoutSuccess = false;
