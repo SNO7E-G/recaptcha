@@ -49,6 +49,12 @@ use PHPUnit\Framework\TestCase;
  */
 class ResponseTest extends TestCase
 {
+    public function testClassIsReadonly(): void
+    {
+        $reflection = new \ReflectionClass(Response::class);
+        $this->assertTrue($reflection->isReadOnly());
+    }
+
     /**
      * @param array<string> $errorCodes
      */

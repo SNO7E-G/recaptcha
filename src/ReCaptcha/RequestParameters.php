@@ -42,28 +42,8 @@ namespace ReCaptcha;
 /**
  * Stores and formats the parameters for the request to the reCAPTCHA service.
  */
-class RequestParameters
+readonly class RequestParameters
 {
-    /**
-     * The shared key between your site and reCAPTCHA.
-     */
-    private string $secret;
-
-    /**
-     * The user response token provided by reCAPTCHA, verifying the user on your site.
-     */
-    private string $response;
-
-    /**
-     * Remote user's IP address.
-     */
-    private ?string $remoteIp;
-
-    /**
-     * Client version.
-     */
-    private ?string $version;
-
     /**
      * Initialise parameters.
      *
@@ -72,13 +52,12 @@ class RequestParameters
      * @param null|string $remoteIp user's IP address
      * @param null|string $version  version of this client library
      */
-    public function __construct(string $secret, string $response, ?string $remoteIp = null, ?string $version = null)
-    {
-        $this->secret = $secret;
-        $this->response = $response;
-        $this->remoteIp = $remoteIp;
-        $this->version = $version;
-    }
+    public function __construct(
+        private string $secret,
+        private string $response,
+        private ?string $remoteIp = null,
+        private ?string $version = null,
+    ) {}
 
     /**
      * Array representation.

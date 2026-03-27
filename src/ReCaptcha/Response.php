@@ -42,60 +42,28 @@ namespace ReCaptcha;
 /**
  * The response returned from the service.
  */
-class Response
+readonly class Response
 {
-    /**
-     * Success or failure.
-     */
-    private bool $success = false;
-
-    /**
-     * Error code strings.
-     *
-     * @var array<string>
-     */
-    private array $errorCodes = [];
-
-    /**
-     * The hostname of the site where the reCAPTCHA was solved.
-     */
-    private string $hostname;
-
-    /**
-     * Timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ).
-     */
-    private string $challengeTs;
-
-    /**
-     * APK package name.
-     */
-    private string $apkPackageName;
-
-    /**
-     * Score assigned to the request.
-     */
-    private ?float $score;
-
-    /**
-     * Action as specified by the page.
-     */
-    private string $action;
-
     /**
      * Constructor.
      *
-     * @param array<string> $errorCodes
+     * @param bool          $success        success or failure
+     * @param array<string> $errorCodes     error code strings
+     * @param string        $hostname       the hostname of the site where the reCAPTCHA was solved
+     * @param string        $challengeTs    timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
+     * @param string        $apkPackageName APK package name
+     * @param ?float        $score          score assigned to the request
+     * @param string        $action         action as specified by the page
      */
-    public function __construct(bool $success, array $errorCodes = [], string $hostname = '', string $challengeTs = '', string $apkPackageName = '', ?float $score = null, string $action = '')
-    {
-        $this->success = $success;
-        $this->hostname = $hostname;
-        $this->challengeTs = $challengeTs;
-        $this->apkPackageName = $apkPackageName;
-        $this->score = $score;
-        $this->action = $action;
-        $this->errorCodes = $errorCodes;
-    }
+    public function __construct(
+        private bool $success,
+        private array $errorCodes = [],
+        private string $hostname = '',
+        private string $challengeTs = '',
+        private string $apkPackageName = '',
+        private ?float $score = null,
+        private string $action = '',
+    ) {}
 
     /**
      * Build the response from the expected JSON returned by the service.
