@@ -145,11 +145,11 @@ class ReCaptcha
      */
     private RequestMethod $requestMethod;
 
-    private string $hostname;
-    private string $apkPackageName;
-    private string $action;
-    private float $threshold;
-    private int $timeoutSeconds;
+    private ?string $hostname = null;
+    private ?string $apkPackageName = null;
+    private ?string $action = null;
+    private ?float $threshold = null;
+    private ?int $timeoutSeconds = null;
 
     /**
      * Create a configured instance to use the reCAPTCHA service.
@@ -161,13 +161,13 @@ class ReCaptcha
      */
     public function __construct(string $secret, ?RequestMethod $requestMethod = null)
     {
-        if (empty($secret)) {
+        if ('' === $secret) {
             throw new \RuntimeException('No secret provided');
         }
 
         $this->secret = $secret;
 
-        if (!is_null($requestMethod)) {
+        if (null !== $requestMethod) {
             $this->requestMethod = $requestMethod;
         } elseif (function_exists('curl_version')) {
             $this->requestMethod = new RequestMethod\CurlPost();
@@ -188,7 +188,7 @@ class ReCaptcha
     public function verify(string $response, ?string $remoteIp = null): Response
     {
         // Discard empty solution submissions
-        if (empty($response)) {
+        if ('' === $response) {
             return new Response(false, [self::E_MISSING_INPUT_RESPONSE]);
         }
 
@@ -197,23 +197,23 @@ class ReCaptcha
         $initialResponse = Response::fromJson($rawResponse);
         $validationErrors = [];
 
-        if (isset($this->hostname) && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname())) {
+        if (null !== $this->hostname && 0 !== strcasecmp($this->hostname, $initialResponse->getHostname())) {
             $validationErrors[] = self::E_HOSTNAME_MISMATCH;
         }
 
-        if (isset($this->apkPackageName) && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName())) {
+        if (null !== $this->apkPackageName && 0 !== strcasecmp($this->apkPackageName, $initialResponse->getApkPackageName())) {
             $validationErrors[] = self::E_APK_PACKAGE_NAME_MISMATCH;
         }
 
-        if (isset($this->action) && 0 !== strcasecmp($this->action, $initialResponse->getAction())) {
+        if (null !== $this->action && 0 !== strcasecmp($this->action, $initialResponse->getAction())) {
             $validationErrors[] = self::E_ACTION_MISMATCH;
         }
 
-        if (isset($this->threshold) && $this->threshold > $initialResponse->getScore()) {
+        if (null !== $this->threshold && $this->threshold > $initialResponse->getScore()) {
             $validationErrors[] = self::E_SCORE_THRESHOLD_NOT_MET;
         }
 
-        if (isset($this->timeoutSeconds)) {
+        if (null !== $this->timeoutSeconds) {
             $challengeTs = strtotime($initialResponse->getChallengeTs());
 
             if ($challengeTs > 0 && time() - $challengeTs > $this->timeoutSeconds) {

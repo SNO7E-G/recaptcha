@@ -123,6 +123,20 @@ class ReCaptchaTest extends TestCase
         $this->assertEquals([ReCaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
     }
 
+    public function testZeroAsStringIsValidSecret(): void
+    {
+        $rc = new ReCaptcha('0');
+        $this->assertInstanceOf(ReCaptcha::class, $rc);
+    }
+
+    public function testZeroAsStringIsValidResponse(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->verify('0');
+        $this->assertTrue($response->isSuccess());
+    }
+
     public function testDefaultRequestMethodWithCurl(): void
     {
         GlobalState::$isCurlAvailable = true;
