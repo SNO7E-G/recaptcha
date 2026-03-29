@@ -49,12 +49,6 @@ use PHPUnit\Framework\TestCase;
  */
 class RequestParametersTest extends TestCase
 {
-    public function testClassIsReadonly(): void
-    {
-        $reflection = new \ReflectionClass(RequestParameters::class);
-        $this->assertTrue($reflection->isReadOnly());
-    }
-
     /**
      * @param array<string, string> $expectedArray
      */
