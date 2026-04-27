@@ -73,6 +73,10 @@ class Post implements RequestMethod
     public function submit(RequestParameters $params): string
     {
         $options = [
+            'ssl' => [
+                'verify_peer' => true,
+                'verify_peer_name' => true,
+            ],
             'http' => [
                 'header' => "Content-type: application/x-www-form-urlencoded\r\n",
                 'method' => 'POST',

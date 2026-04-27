@@ -117,9 +117,13 @@ class PostTest extends TestCase
         $context = $args[2];
         $options = stream_context_get_options($context);
         $this->assertArrayHasKey('http', $options);
+        $this->assertArrayHasKey('ssl', $options);
 
         /** @var array<string, mixed> $httpOptions */
         $httpOptions = $options['http'];
+
+        /** @var array<string, mixed> $sslOptions */
+        $sslOptions = $options['ssl'];
 
         $this->assertArrayHasKey('method', $httpOptions);
         $this->assertEquals('POST', $httpOptions['method']);
@@ -135,6 +139,11 @@ class PostTest extends TestCase
 
         $this->assertArrayHasKey('timeout', $httpOptions);
         $this->assertEquals(60, $httpOptions['timeout']);
+
+        $this->assertArrayHasKey('verify_peer', $sslOptions);
+        $this->assertTrue((bool) $sslOptions['verify_peer']);
+        $this->assertArrayHasKey('verify_peer_name', $sslOptions);
+        $this->assertTrue((bool) $sslOptions['verify_peer_name']);
     }
 
     /**
