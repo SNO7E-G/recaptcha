@@ -32,14 +32,14 @@ Use [Composer](https://getcomposer.org) to install this library from Packagist:
 Run the following command from your project directory to add the dependency:
 
 ```sh
-composer require google/recaptcha "^1.4"
+composer require google/recaptcha "^1.5"
 ```
 
 Alternatively, add the dependency directly to your `composer.json` file:
 
 ```json
 "require": {
-    "google/recaptcha": "^1.4"
+    "google/recaptcha": "^1.5"
 }
 ```
 
