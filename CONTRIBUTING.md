@@ -26,8 +26,9 @@ We use PHP Coding Standards Fixer to maintain coding standards and PHPUnit to
 run our tests. For convenience, there are Composer scripts to run each of these:
 
 ```sh
-composer run-script lint
-composer run-script test
+composer run lint
+composer run phpstan
+composer run test
 ```
 
 These are run automatically by GitHub Actions against your Pull Request, but it's
