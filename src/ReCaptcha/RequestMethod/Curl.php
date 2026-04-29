@@ -57,8 +57,10 @@ class Curl
     /**
      * @param mixed             $ch
      * @param array<int, mixed> $options
+     *
+     * @return bool
      */
-    public function setoptArray($ch, array $options): bool
+    public function setoptArray($ch, array $options)
     {
         // @phpstan-ignore argument.type
         return curl_setopt_array($ch, $options);
@@ -77,8 +79,10 @@ class Curl
 
     /**
      * @param mixed $ch
+     *
+     * @phpstan-return void
      */
-    public function close($ch): void
+    public function close($ch)
     {
         // @phpstan-ignore argument.type
         curl_close($ch);

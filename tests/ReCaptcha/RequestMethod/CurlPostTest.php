@@ -143,6 +143,25 @@ class CurlPostTest extends TestCase
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
+    public function testLegacyNamedArgumentsCanInjectCurlWrapper(): void
+    {
+        $url = 'OVERRIDE';
+        $pc = new CurlPost(curl: new Curl(), siteVerifyUrl: $url);
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals($url, CurlPostGlobalState::$initUrl);
+        $this->assertEquals('RESPONSEBODY', $response);
+    }
+
+    public function testCurlWrapperMethodsRemainUntyped(): void
+    {
+        $setoptArray = new \ReflectionMethod(Curl::class, 'setoptArray');
+        $close = new \ReflectionMethod(Curl::class, 'close');
+
+        $this->assertFalse($setoptArray->hasReturnType());
+        $this->assertFalse($close->hasReturnType());
+    }
+
     public function testConnectionFailureReturnsError(): void
     {
         CurlPostGlobalState::$execResponse = false;

@@ -100,8 +100,20 @@ class ResponseTest extends TestCase
                 true, [], 'google.com', null, null, null, null,
             ],
             [
+                '{"success": "true"}',
+                true, [], null, null, null, null, null,
+            ],
+            [
+                '{"success": 1}',
+                true, [], null, null, null, null, null,
+            ],
+            [
                 '{"success": false}',
                 false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
+            ],
+            [
+                '{}',
+                false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
             ],
             [
                 '{"success": false, "hostname": "google.com"}',

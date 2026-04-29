@@ -61,16 +61,16 @@ class CurlPost implements RequestMethod
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param null|Curl|string $curlOrSiteVerifyUrl Curl wrapper or URL for reCAPTCHA siteverify API
-     * @param null|string      $siteVerifyUrl       URL for reCAPTCHA siteverify API
+     * @param null|Curl|string $curl          Curl wrapper or URL for reCAPTCHA siteverify API
+     * @param null|string      $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct($curlOrSiteVerifyUrl = null, $siteVerifyUrl = null)
+    public function __construct($curl = null, $siteVerifyUrl = null)
     {
-        if ($curlOrSiteVerifyUrl instanceof Curl) {
-            $this->curl = $curlOrSiteVerifyUrl;
+        if ($curl instanceof Curl) {
+            $this->curl = $curl;
         } else {
             $this->curl = new Curl();
-            $siteVerifyUrl = $curlOrSiteVerifyUrl ?? $siteVerifyUrl;
+            $siteVerifyUrl = $curl ?? $siteVerifyUrl;
         }
 
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : (string) $siteVerifyUrl;

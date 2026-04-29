@@ -44,7 +44,8 @@ appropriate.
 The 1.x line treats the following classes and interfaces as public API:
 `ReCaptcha`, `RequestMethod`, `Response`, `RequestParameters`,
 `RequestMethod\Post`, `RequestMethod\CurlPost`, and
-`RequestMethod\SocketPost`.
+`RequestMethod\SocketPost`, plus the request wrapper classes
+`RequestMethod\Curl` and `RequestMethod\Socket`.
 
 Changes that narrow those APIs, such as adding native scalar parameter types,
 adding native return types to existing public methods, making public non-final

@@ -76,11 +76,11 @@ class Response
     {
         $this->success = (bool) $success;
         $this->errorCodes = $errorCodes;
-        $this->hostname = (string) $hostname;
-        $this->challengeTs = (string) $challengeTs;
-        $this->apkPackageName = (string) $apkPackageName;
-        $this->score = is_null($score) ? null : floatval($score);
-        $this->action = (string) $action;
+        $this->hostname = self::stringValue($hostname);
+        $this->challengeTs = self::stringValue($challengeTs);
+        $this->apkPackageName = self::stringValue($apkPackageName);
+        $this->score = self::nullableFloatValue($score);
+        $this->action = self::stringValue($action);
     }
 
     /**
@@ -98,17 +98,17 @@ class Response
 
         $responseData = json_decode($json, true);
 
-        if (!is_array($responseData)) {
+        if (!$responseData || !is_array($responseData)) {
             return new Response(false, [ReCaptcha::E_INVALID_JSON]);
         }
 
-        $hostname = isset($responseData['hostname']) && is_string($responseData['hostname']) ? $responseData['hostname'] : '';
-        $challengeTs = isset($responseData['challenge_ts']) && is_string($responseData['challenge_ts']) ? $responseData['challenge_ts'] : '';
-        $apkPackageName = isset($responseData['apk_package_name']) && is_string($responseData['apk_package_name']) ? $responseData['apk_package_name'] : '';
-        $score = isset($responseData['score']) && is_numeric($responseData['score']) ? floatval($responseData['score']) : null;
-        $action = isset($responseData['action']) && is_string($responseData['action']) ? $responseData['action'] : '';
+        $hostname = self::stringValue($responseData['hostname'] ?? '');
+        $challengeTs = self::stringValue($responseData['challenge_ts'] ?? '');
+        $apkPackageName = self::stringValue($responseData['apk_package_name'] ?? '');
+        $score = self::nullableFloatValue($responseData['score'] ?? null);
+        $action = self::stringValue($responseData['action'] ?? '');
 
-        if (isset($responseData['success']) && true === $responseData['success']) {
+        if (isset($responseData['success']) && true == $responseData['success']) {
             return new Response(true, [], $hostname, $challengeTs, $apkPackageName, $score, $action);
         }
 
@@ -216,5 +216,27 @@ class Response
             'action' => $this->getAction(),
             'error-codes' => $this->getErrorCodes(),
         ];
+    }
+
+    private static function stringValue(mixed $value): string
+    {
+        if (is_scalar($value) || $value instanceof \Stringable) {
+            return (string) $value;
+        }
+
+        return '';
+    }
+
+    private static function nullableFloatValue(mixed $value): ?float
+    {
+        if (is_null($value)) {
+            return null;
+        }
+
+        if (is_scalar($value)) {
+            return floatval($value);
+        }
+
+        return null;
     }
 }

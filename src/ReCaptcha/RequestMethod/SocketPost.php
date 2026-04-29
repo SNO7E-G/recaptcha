@@ -57,16 +57,16 @@ class SocketPost implements RequestMethod
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param null|Socket|string $socketOrSiteVerifyUrl Socket wrapper or URL for reCAPTCHA siteverify API
-     * @param null|string        $siteVerifyUrl         URL for reCAPTCHA siteverify API
+     * @param null|Socket|string $socket        Socket wrapper or URL for reCAPTCHA siteverify API
+     * @param null|string        $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct($socketOrSiteVerifyUrl = null, $siteVerifyUrl = null)
+    public function __construct($socket = null, $siteVerifyUrl = null)
     {
-        if ($socketOrSiteVerifyUrl instanceof Socket) {
-            $this->socket = $socketOrSiteVerifyUrl;
+        if ($socket instanceof Socket) {
+            $this->socket = $socket;
         } else {
             $this->socket = new Socket();
-            $siteVerifyUrl = $socketOrSiteVerifyUrl ?? $siteVerifyUrl;
+            $siteVerifyUrl = $socket ?? $siteVerifyUrl;
         }
 
         $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : (string) $siteVerifyUrl;

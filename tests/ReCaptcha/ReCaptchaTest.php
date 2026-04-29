@@ -181,6 +181,14 @@ class ReCaptchaTest extends TestCase
         $this->assertTrue($response->isSuccess());
     }
 
+    public function testScalarResponseIsAccepted(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->verify(12345);
+        $this->assertTrue($response->isSuccess());
+    }
+
     public function testDefaultRequestMethodWithCurl(): void
     {
         GlobalState::$isCurlAvailable = true;

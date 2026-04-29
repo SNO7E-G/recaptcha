@@ -201,6 +201,33 @@ class SocketPostTest extends TestCase
         $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
     }
 
+    public function testLegacyNamedArgumentsCanInjectSocketWrapper(): void
+    {
+        SocketPostGlobalState::$fgetsResponses = [
+            "HTTP/1.0 200 OK\r\n",
+            "Content-Type: application/json\r\n",
+            "\r\n",
+            'RESPONSEBODY',
+        ];
+
+        $url = 'https://custom.recaptcha.net/recaptcha/api/siteverify';
+        $sp = new SocketPost(socket: new Socket(), siteVerifyUrl: $url);
+        $response = $sp->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals('ssl://custom.recaptcha.net', SocketPostGlobalState::$fsockopenHostname);
+        $this->assertStringContainsString('POST /recaptcha/api/siteverify HTTP/1.0', SocketPostGlobalState::$fwriteData);
+        $this->assertEquals('RESPONSEBODY', $response);
+        $this->assertTrue(SocketPostGlobalState::$fcloseCalled);
+    }
+
+    public function testSocketWrapperKeepsLegacyMethods(): void
+    {
+        $class = new \ReflectionClass(Socket::class);
+
+        $this->assertTrue($class->hasMethod('fgets'));
+        $this->assertTrue($class->hasMethod('feof'));
+    }
+
     public function testSubmitReturnsResponseWhenHttp11(): void
     {
         SocketPostGlobalState::$fgetsResponses = [

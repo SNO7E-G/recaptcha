@@ -191,8 +191,10 @@ class ReCaptcha
      */
     public function verify($response, $remoteIp = null)
     {
+        $response = self::stringValue($response);
+
         // Discard empty solution submissions
-        if (!is_string($response) || '' === $response) {
+        if ('' === $response) {
             return new Response(false, [self::E_MISSING_INPUT_RESPONSE]);
         }
 

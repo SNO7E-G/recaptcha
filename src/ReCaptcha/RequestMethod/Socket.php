@@ -60,10 +60,10 @@ class Socket
      */
     public function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout = null)
     {
-        $timeout = is_null($timeout) ? floatval(ini_get('default_socket_timeout')) : $timeout;
+        $timeout = is_null($timeout) ? floatval(ini_get('default_socket_timeout')) : floatval($timeout);
         $this->handle = fsockopen($hostname, $port, $errno, $errstr, $timeout);
 
-        if (false !== $this->handle && 0 === $errno && '' === $errstr) {
+        if (false != $this->handle && 0 === $errno && '' === $errstr) {
             return $this->handle;
         }
 
@@ -74,25 +74,80 @@ class Socket
         return false;
     }
 
-    public function streamSetTimeout(int $seconds): bool
+    /**
+     * @param int $seconds
+     * @param int $microseconds
+     *
+     * @return bool
+     */
+    public function streamSetTimeout($seconds, $microseconds = 0)
     {
         // @phpstan-ignore argument.type
-        return stream_set_timeout($this->handle, $seconds);
+        return stream_set_timeout($this->handle, $seconds, $microseconds);
     }
 
-    public function fwrite(string $string): false|int
+    /**
+     * @param string   $string
+     * @param null|int $length
+     *
+     * @return false|int
+     */
+    public function fwrite($string, $length = null)
+    {
+        $string = (string) $string;
+
+        // @phpstan-ignore argument.type
+        return fwrite($this->handle, $string, is_null($length) ? strlen($string) : $length);
+    }
+
+    /**
+     * @param null|int $length
+     * @param int      $offset
+     *
+     * @return false|string
+     */
+    public function streamGetContents($length = null, $offset = -1)
+    {
+        if (is_null($length)) {
+            // @phpstan-ignore argument.type
+            return stream_get_contents($this->handle);
+        }
+
+        // @phpstan-ignore argument.type
+        return stream_get_contents($this->handle, $length, $offset);
+    }
+
+    /**
+     * @param null|int $length
+     *
+     * @return false|string
+     */
+    public function fgets($length = null)
+    {
+        if (is_null($length)) {
+            // @phpstan-ignore argument.type
+            return fgets($this->handle);
+        }
+
+        $length = max(0, intval($length));
+
+        // @phpstan-ignore argument.type
+        return fgets($this->handle, $length);
+    }
+
+    /**
+     * @return bool
+     */
+    public function feof()
     {
         // @phpstan-ignore argument.type
-        return fwrite($this->handle, $string);
+        return feof($this->handle);
     }
 
-    public function streamGetContents(): false|string
-    {
-        // @phpstan-ignore argument.type
-        return stream_get_contents($this->handle);
-    }
-
-    public function fclose(): bool
+    /**
+     * @return bool
+     */
+    public function fclose()
     {
         // @phpstan-ignore argument.type
         return fclose($this->handle);
