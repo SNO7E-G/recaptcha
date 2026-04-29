@@ -87,4 +87,11 @@ class RequestParametersTest extends TestCase
             ],
         ];
     }
+
+    public function testClassRemainsExtendable(): void
+    {
+        $class = new \ReflectionClass(RequestParameters::class);
+
+        $this->assertFalse($class->isReadOnly());
+    }
 }

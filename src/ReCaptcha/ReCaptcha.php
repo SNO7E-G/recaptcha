@@ -154,13 +154,17 @@ class ReCaptcha
     /**
      * Create a configured instance to use the reCAPTCHA service.
      *
-     * @param string        $secret        the shared key between your site and reCAPTCHA
+     * @param mixed         $secret        the shared key between your site and reCAPTCHA
      * @param RequestMethod $requestMethod method used to send the request. Defaults to POST.
      *
      * @throws \RuntimeException if $secret is invalid
      */
-    public function __construct(string $secret, ?RequestMethod $requestMethod = null)
+    public function __construct($secret, ?RequestMethod $requestMethod = null)
     {
+        if (!is_string($secret)) {
+            throw new \RuntimeException('The provided secret must be a string');
+        }
+
         if ('' === $secret) {
             throw new \RuntimeException('No secret provided');
         }
@@ -180,20 +184,26 @@ class ReCaptcha
      * Calls the reCAPTCHA siteverify API to verify whether the user passes
      * CAPTCHA test and additionally runs any specified additional checks.
      *
-     * @param string      $response the user response token provided by reCAPTCHA, verifying the user on your site
-     * @param null|string $remoteIp the end user's IP address
+     * @param mixed $response the user response token provided by reCAPTCHA, verifying the user on your site
+     * @param mixed $remoteIp the end user's IP address
      *
      * @return Response response from the service
      */
-    public function verify(string $response, ?string $remoteIp = null): Response
+    public function verify($response, $remoteIp = null)
     {
         // Discard empty solution submissions
-        if ('' === $response) {
+        if (!is_string($response) || '' === $response) {
             return new Response(false, [self::E_MISSING_INPUT_RESPONSE]);
         }
 
+        $remoteIp = self::nullableStringValue($remoteIp);
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
+
+        if (!is_string($rawResponse)) {
+            return new Response(false, [self::E_BAD_RESPONSE]);
+        }
+
         $initialResponse = Response::fromJson($rawResponse);
         $validationErrors = [];
 
@@ -240,13 +250,13 @@ class ReCaptcha
      * Provide a hostname to match against in verify()
      * This should be without a protocol or trailing slash, e.g. www.google.com.
      *
-     * @param string $hostname Expected hostname
+     * @param mixed $hostname Expected hostname
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedHostname(string $hostname): self
+    public function setExpectedHostname($hostname)
     {
-        $this->hostname = $hostname;
+        $this->hostname = self::stringValue($hostname);
 
         return $this;
     }
@@ -254,13 +264,13 @@ class ReCaptcha
     /**
      * Provide an APK package name to match against in verify().
      *
-     * @param string $apkPackageName Expected APK package name
+     * @param mixed $apkPackageName Expected APK package name
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedApkPackageName(string $apkPackageName): self
+    public function setExpectedApkPackageName($apkPackageName)
     {
-        $this->apkPackageName = $apkPackageName;
+        $this->apkPackageName = self::stringValue($apkPackageName);
 
         return $this;
     }
@@ -269,13 +279,13 @@ class ReCaptcha
      * Provide an action to match against in verify()
      * This should be set per page.
      *
-     * @param string $action Expected action
+     * @param mixed $action Expected action
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setExpectedAction(string $action): self
+    public function setExpectedAction($action)
     {
-        $this->action = $action;
+        $this->action = self::stringValue($action);
 
         return $this;
     }
@@ -284,13 +294,13 @@ class ReCaptcha
      * Provide a threshold to meet or exceed in verify()
      * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
      *
-     * @param float $threshold Expected threshold
+     * @param mixed $threshold Expected threshold
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setScoreThreshold(float $threshold): self
+    public function setScoreThreshold($threshold)
     {
-        $this->threshold = $threshold;
+        $this->threshold = self::floatValue($threshold);
 
         return $this;
     }
@@ -298,14 +308,50 @@ class ReCaptcha
     /**
      * Provide a timeout in seconds to test against the challenge timestamp in verify().
      *
-     * @param int $timeoutSeconds Maximum time (seconds) elapsed since the challenge timestamp
+     * @param mixed $timeoutSeconds Maximum time (seconds) elapsed since the challenge timestamp
      *
      * @return ReCaptcha Current instance for fluent interface
      */
-    public function setChallengeTimeout(int $timeoutSeconds): self
+    public function setChallengeTimeout($timeoutSeconds)
     {
-        $this->timeoutSeconds = $timeoutSeconds;
+        $this->timeoutSeconds = self::intValue($timeoutSeconds);
 
         return $this;
+    }
+
+    private static function nullableStringValue(mixed $value): ?string
+    {
+        if (is_null($value)) {
+            return null;
+        }
+
+        return self::stringValue($value);
+    }
+
+    private static function stringValue(mixed $value): string
+    {
+        if (is_scalar($value) || $value instanceof \Stringable) {
+            return (string) $value;
+        }
+
+        return '';
+    }
+
+    private static function floatValue(mixed $value): float
+    {
+        if (is_null($value) || is_scalar($value)) {
+            return floatval($value);
+        }
+
+        return 0.0;
+    }
+
+    private static function intValue(mixed $value): int
+    {
+        if (is_null($value) || is_scalar($value)) {
+            return intval($value);
+        }
+
+        return 0;
     }
 }

@@ -126,6 +126,21 @@ class ResponseTest extends TestCase
         ];
     }
 
+    public function testFromJsonReturnsInvalidJsonForNull(): void
+    {
+        $response = Response::fromJson(null);
+
+        $this->assertFalse($response->isSuccess());
+        $this->assertEquals([ReCaptcha::E_INVALID_JSON], $response->getErrorCodes());
+    }
+
+    public function testClassRemainsExtendable(): void
+    {
+        $class = new \ReflectionClass(Response::class);
+
+        $this->assertFalse($class->isReadOnly());
+    }
+
     public function testIsSuccess(): void
     {
         $response = new Response(true);

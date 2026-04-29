@@ -38,3 +38,19 @@ with additional error codes based on the client's checks. When adding a new
 [`RequestMethod`](./src/ReCaptcha/RequestMethod.php) ensure that it returns the
 `ReCaptcha::E_CONNECTION_FAILED` and `ReCaptcha::E_BAD_RESPONSE` where
 appropriate.
+
+## Public API compatibility
+
+The 1.x line treats the following classes and interfaces as public API:
+`ReCaptcha`, `RequestMethod`, `Response`, `RequestParameters`,
+`RequestMethod\Post`, `RequestMethod\CurlPost`, and
+`RequestMethod\SocketPost`.
+
+Changes that narrow those APIs, such as adding native scalar parameter types,
+adding native return types to existing public methods, making public non-final
+classes `readonly` or `final`, removing public classes, or removing existing
+constructor argument forms, should be reserved for a major release.
+
+The `RequestMethod::submit()` interface intentionally keeps its 1.x-compatible
+native signature. Implementations are still expected to return the body of the
+reCAPTCHA response as a string.

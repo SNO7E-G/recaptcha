@@ -42,8 +42,25 @@ namespace ReCaptcha;
 /**
  * The response returned from the service.
  */
-readonly class Response
+class Response
 {
+    private bool $success = false;
+
+    /**
+     * @var array<string>
+     */
+    private array $errorCodes = [];
+
+    private string $hostname = '';
+
+    private string $challengeTs = '';
+
+    private string $apkPackageName = '';
+
+    private ?float $score = null;
+
+    private string $action = '';
+
     /**
      * Constructor.
      *
@@ -55,21 +72,30 @@ readonly class Response
      * @param ?float        $score          score assigned to the request
      * @param string        $action         action as specified by the page
      */
-    public function __construct(
-        private bool $success,
-        private array $errorCodes = [],
-        private string $hostname = '',
-        private string $challengeTs = '',
-        private string $apkPackageName = '',
-        private ?float $score = null,
-        private string $action = '',
-    ) {}
+    public function __construct($success, array $errorCodes = [], $hostname = '', $challengeTs = '', $apkPackageName = '', $score = null, $action = '')
+    {
+        $this->success = (bool) $success;
+        $this->errorCodes = $errorCodes;
+        $this->hostname = (string) $hostname;
+        $this->challengeTs = (string) $challengeTs;
+        $this->apkPackageName = (string) $apkPackageName;
+        $this->score = is_null($score) ? null : floatval($score);
+        $this->action = (string) $action;
+    }
 
     /**
      * Build the response from the expected JSON returned by the service.
+     *
+     * @param mixed $json
+     *
+     * @return Response
      */
-    public static function fromJson(string $json): Response
+    public static function fromJson($json)
     {
+        if (!is_string($json)) {
+            return new Response(false, [ReCaptcha::E_INVALID_JSON]);
+        }
+
         $responseData = json_decode($json, true);
 
         if (!is_array($responseData)) {
@@ -98,8 +124,10 @@ readonly class Response
 
     /**
      * Is success?
+     *
+     * @return bool
      */
-    public function isSuccess(): bool
+    public function isSuccess()
     {
         return $this->success;
     }
@@ -109,47 +137,57 @@ readonly class Response
      *
      * @return array<string>
      */
-    public function getErrorCodes(): array
+    public function getErrorCodes()
     {
         return $this->errorCodes;
     }
 
     /**
      * Get hostname.
+     *
+     * @return string
      */
-    public function getHostname(): string
+    public function getHostname()
     {
         return $this->hostname;
     }
 
     /**
      * Get challenge timestamp.
+     *
+     * @return string
      */
-    public function getChallengeTs(): string
+    public function getChallengeTs()
     {
         return $this->challengeTs;
     }
 
     /**
      * Get APK package name.
+     *
+     * @return string
      */
-    public function getApkPackageName(): string
+    public function getApkPackageName()
     {
         return $this->apkPackageName;
     }
 
     /**
      * Get score.
+     *
+     * @return null|float
      */
-    public function getScore(): ?float
+    public function getScore()
     {
         return $this->score;
     }
 
     /**
      * Get action.
+     *
+     * @return string
      */
-    public function getAction(): string
+    public function getAction()
     {
         return $this->action;
     }
@@ -167,7 +205,7 @@ readonly class Response
      *     error-codes: string[]
      * }
      */
-    public function toArray(): array
+    public function toArray()
     {
         return [
             'success' => $this->isSuccess(),

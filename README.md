@@ -169,6 +169,10 @@ $recaptcha = new \ReCaptcha\ReCaptcha($secret, new \ReCaptcha\RequestMethod\Sock
 
 For more details on usage and structure, see [ARCHITECTURE](ARCHITECTURE.md).
 
+The 1.x line preserves compatibility for the public request and response APIs.
+See [Public API compatibility](ARCHITECTURE.md#public-api-compatibility) for
+details on which API changes require a major release.
+
 ### Examples
 
 You can see examples of each reCAPTCHA type in [examples/](examples/). You can

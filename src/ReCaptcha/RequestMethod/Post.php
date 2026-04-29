@@ -58,9 +58,9 @@ class Post implements RequestMethod
      *
      * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct($siteVerifyUrl = null)
     {
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : (string) $siteVerifyUrl;
     }
 
     /**
@@ -70,7 +70,7 @@ class Post implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params): string
+    public function submit(RequestParameters $params)
     {
         $options = [
             'ssl' => [

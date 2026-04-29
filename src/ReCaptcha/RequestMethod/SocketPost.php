@@ -50,16 +50,26 @@ use ReCaptcha\RequestParameters;
  */
 class SocketPost implements RequestMethod
 {
+    private Socket $socket;
+
     private string $siteVerifyUrl;
 
     /**
      * Only needed if you want to override the defaults.
      *
-     * @param null|string $siteVerifyUrl URL for reCAPTCHA siteverify API
+     * @param null|Socket|string $socketOrSiteVerifyUrl Socket wrapper or URL for reCAPTCHA siteverify API
+     * @param null|string        $siteVerifyUrl         URL for reCAPTCHA siteverify API
      */
-    public function __construct(?string $siteVerifyUrl = null)
+    public function __construct($socketOrSiteVerifyUrl = null, $siteVerifyUrl = null)
     {
-        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : $siteVerifyUrl;
+        if ($socketOrSiteVerifyUrl instanceof Socket) {
+            $this->socket = $socketOrSiteVerifyUrl;
+        } else {
+            $this->socket = new Socket();
+            $siteVerifyUrl = $socketOrSiteVerifyUrl ?? $siteVerifyUrl;
+        }
+
+        $this->siteVerifyUrl = (is_null($siteVerifyUrl)) ? ReCaptcha::SITE_VERIFY_URL : (string) $siteVerifyUrl;
     }
 
     /**
@@ -69,7 +79,7 @@ class SocketPost implements RequestMethod
      *
      * @return string Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params): string
+    public function submit(RequestParameters $params)
     {
         $errno = 0;
         $errstr = '';
@@ -79,13 +89,15 @@ class SocketPost implements RequestMethod
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
-        $handle = fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30);
+        $handle = $this->socket->fsockopen('ssl://'.$urlParsed['host'], 443, $errno, $errstr, 30);
 
         if (false === $handle || 0 !== $errno || '' !== $errstr) {
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
-        if (false === stream_set_timeout($handle, 60)) {
+        if (false === $this->socket->streamSetTimeout(60)) {
+            $this->socket->fclose();
+
             return '{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}';
         }
 
@@ -98,10 +110,10 @@ class SocketPost implements RequestMethod
         $request .= "Connection: close\r\n\r\n";
         $request .= $content."\r\n\r\n";
 
-        fwrite($handle, $request);
-        $response = stream_get_contents($handle);
+        $this->socket->fwrite($request);
+        $response = $this->socket->streamGetContents();
 
-        fclose($handle);
+        $this->socket->fclose();
 
         if (!is_string($response)) {
             $response = '';

@@ -37,82 +37,64 @@ declare(strict_types=1);
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha;
+namespace ReCaptcha\RequestMethod;
 
 /**
- * Stores and formats the parameters for the request to the reCAPTCHA service.
+ * Convenience wrapper around native socket and stream functions to allow mocking.
  */
-class RequestParameters
+class Socket
 {
-    private string $secret;
-
-    private string $response;
-
-    private ?string $remoteIp;
-
-    private ?string $version;
+    /**
+     * @var mixed
+     */
+    private $handle;
 
     /**
-     * Initialise parameters.
+     * @param string     $hostname
+     * @param int        $port
+     * @param int        $errno
+     * @param string     $errstr
+     * @param null|float $timeout
      *
-     * @param mixed $secret   site secret
-     * @param mixed $response value from g-captcha-response form field
-     * @param mixed $remoteIp user's IP address
-     * @param mixed $version  version of this client library
+     * @return mixed
      */
-    public function __construct($secret, $response, $remoteIp = null, $version = null)
+    public function fsockopen($hostname, $port = -1, &$errno = 0, &$errstr = '', $timeout = null)
     {
-        $this->secret = self::stringValue($secret);
-        $this->response = self::stringValue($response);
-        $this->remoteIp = self::nullableStringValue($remoteIp);
-        $this->version = self::nullableStringValue($version);
-    }
+        $timeout = is_null($timeout) ? floatval(ini_get('default_socket_timeout')) : $timeout;
+        $this->handle = fsockopen($hostname, $port, $errno, $errstr, $timeout);
 
-    /**
-     * Array representation.
-     *
-     * @return array<string, string> array formatted parameters
-     */
-    public function toArray()
-    {
-        $params = ['secret' => $this->secret, 'response' => $this->response];
-
-        if (!is_null($this->remoteIp)) {
-            $params['remoteip'] = $this->remoteIp;
+        if (false !== $this->handle && 0 === $errno && '' === $errstr) {
+            return $this->handle;
         }
 
-        if (!is_null($this->version)) {
-            $params['version'] = $this->version;
+        if (false !== $this->handle) {
+            $this->fclose();
         }
 
-        return $params;
+        return false;
     }
 
-    /**
-     * Query string representation for HTTP request.
-     *
-     * @return string query string formatted parameters
-     */
-    public function toQueryString()
+    public function streamSetTimeout(int $seconds): bool
     {
-        return http_build_query($this->toArray(), '', '&');
+        // @phpstan-ignore argument.type
+        return stream_set_timeout($this->handle, $seconds);
     }
 
-    private static function nullableStringValue(mixed $value): ?string
+    public function fwrite(string $string): false|int
     {
-        if (is_null($value)) {
-            return null;
-        }
-
-        return self::stringValue($value);
+        // @phpstan-ignore argument.type
+        return fwrite($this->handle, $string);
     }
 
-    private static function stringValue(mixed $value): string
+    public function streamGetContents(): false|string
     {
-        if (is_scalar($value) || $value instanceof \Stringable) {
-            return (string) $value;
-        }
+        // @phpstan-ignore argument.type
+        return stream_get_contents($this->handle);
+    }
 
-        return '';
+    public function fclose(): bool
+    {
+        // @phpstan-ignore argument.type
+        return fclose($this->handle);
     }
 }

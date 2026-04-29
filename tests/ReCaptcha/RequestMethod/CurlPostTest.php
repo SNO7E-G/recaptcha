@@ -133,6 +133,16 @@ class CurlPostTest extends TestCase
         $this->assertEquals('RESPONSEBODY', $response);
     }
 
+    public function testLegacyConstructorOverrideSiteVerifyUrl(): void
+    {
+        $url = 'OVERRIDE';
+        $pc = new CurlPost(null, $url);
+        $response = $pc->submit(new RequestParameters('secret', 'response'));
+
+        $this->assertEquals($url, CurlPostGlobalState::$initUrl);
+        $this->assertEquals('RESPONSEBODY', $response);
+    }
+
     public function testConnectionFailureReturnsError(): void
     {
         CurlPostGlobalState::$execResponse = false;

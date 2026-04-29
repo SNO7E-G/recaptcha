@@ -77,9 +77,8 @@ class ReCaptchaTest extends TestCase
     #[DataProvider('invalidSecretProvider')]
     public function testExceptionThrownOnInvalidSecretType(mixed $invalid): void
     {
-        $this->expectException(\TypeError::class);
+        $this->expectException(\RuntimeException::class);
 
-        /** @phpstan-ignore argument.type */
         $rc = new ReCaptcha($invalid);
     }
 
@@ -101,7 +100,6 @@ class ReCaptchaTest extends TestCase
     {
         $this->expectException(\RuntimeException::class);
 
-        /** @phpstan-ignore argument.type */
         $rc = new ReCaptcha($emptySecret);
     }
 
@@ -121,6 +119,52 @@ class ReCaptchaTest extends TestCase
         $response = $rc->verify('');
         $this->assertFalse($response->isSuccess());
         $this->assertEquals([ReCaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
+    }
+
+    public function testVerifyReturnsErrorOnNullResponse(): void
+    {
+        $rc = new ReCaptcha('secret');
+        $response = $rc->verify(null);
+        $this->assertFalse($response->isSuccess());
+        $this->assertEquals([ReCaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
+    }
+
+    public function testRequestMethodSubmitKeepsLegacyReturnTypeCompatibility(): void
+    {
+        $submit = new \ReflectionMethod(RequestMethod::class, 'submit');
+
+        $this->assertFalse($submit->hasReturnType());
+    }
+
+    public function testLegacyRequestMethodImplementationWithoutReturnTypeCanBeUsed(): void
+    {
+        $method = new class implements RequestMethod {
+            public function submit(RequestParameters $params)
+            {
+                return '{"success": true}';
+            }
+        };
+
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->verify('response');
+
+        $this->assertTrue($response->isSuccess());
+    }
+
+    public function testNonStringRequestMethodResponseReturnsBadResponse(): void
+    {
+        $method = new class implements RequestMethod {
+            public function submit(RequestParameters $params)
+            {
+                return false;
+            }
+        };
+
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->verify('response');
+
+        $this->assertFalse($response->isSuccess());
+        $this->assertEquals([ReCaptcha::E_BAD_RESPONSE], $response->getErrorCodes());
     }
 
     public function testZeroAsStringIsValidSecret(): void
@@ -254,6 +298,14 @@ class ReCaptchaTest extends TestCase
         $response = $rc->setScoreThreshold(0.5)->verify('response');
         $this->assertFalse($response->isSuccess());
         $this->assertEquals([ReCaptcha::E_SCORE_THRESHOLD_NOT_MET], $response->getErrorCodes());
+    }
+
+    public function testScoreThresholdAcceptsNumericString(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true, "score": "0.9"}');
+        $rc = new ReCaptcha('secret', $method);
+        $response = $rc->setScoreThreshold('0.5')->verify('response');
+        $this->assertTrue($response->isSuccess());
     }
 
     public function testVerifyWithinTimeout(): void

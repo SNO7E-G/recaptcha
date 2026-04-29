@@ -37,82 +37,50 @@ declare(strict_types=1);
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace ReCaptcha;
+namespace ReCaptcha\RequestMethod;
 
 /**
- * Stores and formats the parameters for the request to the reCAPTCHA service.
+ * Convenience wrapper around the cURL functions to allow mocking.
  */
-class RequestParameters
+class Curl
 {
-    private string $secret;
-
-    private string $response;
-
-    private ?string $remoteIp;
-
-    private ?string $version;
-
     /**
-     * Initialise parameters.
+     * @param null|string $url
      *
-     * @param mixed $secret   site secret
-     * @param mixed $response value from g-captcha-response form field
-     * @param mixed $remoteIp user's IP address
-     * @param mixed $version  version of this client library
+     * @return mixed
      */
-    public function __construct($secret, $response, $remoteIp = null, $version = null)
+    public function init($url = null)
     {
-        $this->secret = self::stringValue($secret);
-        $this->response = self::stringValue($response);
-        $this->remoteIp = self::nullableStringValue($remoteIp);
-        $this->version = self::nullableStringValue($version);
+        return curl_init($url);
     }
 
     /**
-     * Array representation.
-     *
-     * @return array<string, string> array formatted parameters
+     * @param mixed             $ch
+     * @param array<int, mixed> $options
      */
-    public function toArray()
+    public function setoptArray($ch, array $options): bool
     {
-        $params = ['secret' => $this->secret, 'response' => $this->response];
-
-        if (!is_null($this->remoteIp)) {
-            $params['remoteip'] = $this->remoteIp;
-        }
-
-        if (!is_null($this->version)) {
-            $params['version'] = $this->version;
-        }
-
-        return $params;
+        // @phpstan-ignore argument.type
+        return curl_setopt_array($ch, $options);
     }
 
     /**
-     * Query string representation for HTTP request.
+     * @param mixed $ch
      *
-     * @return string query string formatted parameters
+     * @return mixed
      */
-    public function toQueryString()
+    public function exec($ch)
     {
-        return http_build_query($this->toArray(), '', '&');
+        // @phpstan-ignore argument.type
+        return curl_exec($ch);
     }
 
-    private static function nullableStringValue(mixed $value): ?string
+    /**
+     * @param mixed $ch
+     */
+    public function close($ch): void
     {
-        if (is_null($value)) {
-            return null;
-        }
-
-        return self::stringValue($value);
-    }
-
-    private static function stringValue(mixed $value): string
-    {
-        if (is_scalar($value) || $value instanceof \Stringable) {
-            return (string) $value;
-        }
-
-        return '';
+        // @phpstan-ignore argument.type
+        curl_close($ch);
     }
 }

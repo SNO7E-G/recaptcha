@@ -49,7 +49,7 @@ interface RequestMethod
      *
      * @param RequestParameters $params Request parameters
      *
-     * @return string Body of the reCAPTCHA response
+     * @return mixed Body of the reCAPTCHA response
      */
-    public function submit(RequestParameters $params): string;
+    public function submit(RequestParameters $params);
 }
