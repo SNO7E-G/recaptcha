@@ -56,6 +56,8 @@ class CurlPostGlobalState
     public static ?array $setoptArrayOptions = null;
 
     public static bool|string $execResponse = 'RESPONSEBODY';
+
+    public static bool $closeCalled = false;
 }
 
 /**
@@ -93,7 +95,7 @@ function curl_exec(\stdClass $ch): bool|string
  */
 function curl_close(\stdClass $ch): void
 {
-    // no-op mock
+    CurlPostGlobalState::$closeCalled = true;
 }
 
 /**
@@ -108,6 +110,7 @@ class CurlPostTest extends TestCase
         CurlPostGlobalState::$initUrl = null;
         CurlPostGlobalState::$setoptArrayOptions = null;
         CurlPostGlobalState::$execResponse = 'RESPONSEBODY';
+        CurlPostGlobalState::$closeCalled = false;
     }
 
     public function testSubmit(): void
@@ -169,5 +172,13 @@ class CurlPostTest extends TestCase
         $response = $pc->submit(new RequestParameters('secret', 'response'));
 
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
+    }
+
+    public function testCurlWrapperCloseDelegatesToNativeFunction(): void
+    {
+        $curl = new Curl();
+        $curl->close(new \stdClass());
+
+        $this->assertTrue(CurlPostGlobalState::$closeCalled);
     }
 }

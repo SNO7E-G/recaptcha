@@ -173,6 +173,33 @@ The 1.x line preserves compatibility for the public request and response APIs.
 See [Public API compatibility](ARCHITECTURE.md#public-api-compatibility) for
 details on which API changes require a major release.
 
+The following classes and interfaces are treated as public API in 1.x:
+
+- `ReCaptcha\ReCaptcha`
+- `ReCaptcha\RequestMethod`
+- `ReCaptcha\Response`
+- `ReCaptcha\RequestParameters`
+- `ReCaptcha\RequestMethod\Post`
+- `ReCaptcha\RequestMethod\CurlPost`
+- `ReCaptcha\RequestMethod\SocketPost`
+- `ReCaptcha\RequestMethod\Curl`
+- `ReCaptcha\RequestMethod\Socket`
+
+### 1.5.1 compatibility release notes
+
+The 1.5.1 compatibility release restores 1.x API behavior while keeping the
+hardening and reliability updates from 1.5.0:
+
+- `RequestMethod::submit()` remains compatible with legacy implementations, and
+  `ReCaptcha::verify()` validates non-string request-method responses.
+- Public non-final DTOs (`Response`, `RequestParameters`) remain extendable.
+- Legacy `CurlPost` and `SocketPost` constructor forms are supported,
+  including source-compatible named arguments.
+- Legacy `Curl` and `Socket` wrappers are available for source compatibility.
+- `SocketPost` closes the handle when timeout setup fails.
+- `CurlPost` always closes cURL handles.
+- Fallback request methods continue to enforce TLS peer verification.
+
 ### Examples
 
 You can see examples of each reCAPTCHA type in [examples/](examples/). You can
