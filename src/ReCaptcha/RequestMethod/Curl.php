@@ -84,7 +84,6 @@ class Curl
      */
     public function close($ch)
     {
-        // @phpstan-ignore argument.type
-        curl_close($ch);
+        // PHP automatically closes curl resources on destruction.
     }
 }

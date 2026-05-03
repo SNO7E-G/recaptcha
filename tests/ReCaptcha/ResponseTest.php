@@ -53,7 +53,7 @@ class ResponseTest extends TestCase
      * @param array<string> $errorCodes
      */
     #[DataProvider('provideJson')]
-    public function testFromJson(string $json, bool $success, array $errorCodes, ?string $hostname, ?string $challengeTs, ?string $apkPackageName, ?float $score, ?string $action): void
+    public function testFromJson(mixed $json, bool $success, array $errorCodes, ?string $hostname, ?string $challengeTs, ?string $apkPackageName, ?float $score, ?string $action): void
     {
         $response = Response::fromJson($json);
         $this->assertEquals($success, $response->isSuccess());
@@ -66,7 +66,7 @@ class ResponseTest extends TestCase
     }
 
     /**
-     * @return array<int, array{0: string, 1: bool, 2: array<string>, 3: null|string, 4: null|string, 5: null|string, 6: null|float, 7: null|string}>
+     * @return array<int, array{0: mixed, 1: bool, 2: array<string>, 3: null|string, 4: null|string, 5: null|string, 6: null|float, 7: null|string}>
      */
     public static function provideJson(): array
     {
@@ -124,6 +124,10 @@ class ResponseTest extends TestCase
                 false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
             ],
             [
+                null,
+                false, [ReCaptcha::E_INVALID_JSON], null, null, null, null, null,
+            ],
+            [
                 '{"success": false, "error-codes": "invalid-input-secret"}',
                 false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
             ],
@@ -136,14 +140,6 @@ class ResponseTest extends TestCase
                 false, [ReCaptcha::E_UNKNOWN_ERROR], null, null, null, null, null,
             ],
         ];
-    }
-
-    public function testFromJsonReturnsInvalidJsonForNull(): void
-    {
-        $response = Response::fromJson(null);
-
-        $this->assertFalse($response->isSuccess());
-        $this->assertEquals([ReCaptcha::E_INVALID_JSON], $response->getErrorCodes());
     }
 
     public function testClassRemainsExtendable(): void

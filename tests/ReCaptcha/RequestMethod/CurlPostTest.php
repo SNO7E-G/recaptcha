@@ -173,12 +173,4 @@ class CurlPostTest extends TestCase
 
         $this->assertEquals('{"success": false, "error-codes": ["'.ReCaptcha::E_CONNECTION_FAILED.'"]}', $response);
     }
-
-    public function testCurlWrapperCloseDelegatesToNativeFunction(): void
-    {
-        $curl = new Curl();
-        $curl->close(new \stdClass());
-
-        $this->assertTrue(CurlPostGlobalState::$closeCalled);
-    }
 }

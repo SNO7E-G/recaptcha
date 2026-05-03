@@ -184,8 +184,8 @@ class ReCaptcha
      * Calls the reCAPTCHA siteverify API to verify whether the user passes
      * CAPTCHA test and additionally runs any specified additional checks.
      *
-     * @param mixed $response the user response token provided by reCAPTCHA, verifying the user on your site
-     * @param mixed $remoteIp the end user's IP address
+     * @param string      $response the user response token provided by reCAPTCHA, verifying the user on your site
+     * @param null|string $remoteIp the end user's IP address
      *
      * @return Response response from the service
      */
@@ -202,6 +202,7 @@ class ReCaptcha
         $params = new RequestParameters($this->secret, $response, $remoteIp, self::VERSION);
         $rawResponse = $this->requestMethod->submit($params);
 
+        // @phpstan-ignore function.alreadyNarrowedType
         if (!is_string($rawResponse)) {
             return new Response(false, [self::E_BAD_RESPONSE]);
         }
@@ -252,7 +253,7 @@ class ReCaptcha
      * Provide a hostname to match against in verify()
      * This should be without a protocol or trailing slash, e.g. www.google.com.
      *
-     * @param mixed $hostname Expected hostname
+     * @param string $hostname Expected hostname
      *
      * @return ReCaptcha Current instance for fluent interface
      */
@@ -266,7 +267,7 @@ class ReCaptcha
     /**
      * Provide an APK package name to match against in verify().
      *
-     * @param mixed $apkPackageName Expected APK package name
+     * @param string $apkPackageName Expected APK package name
      *
      * @return ReCaptcha Current instance for fluent interface
      */
@@ -281,7 +282,7 @@ class ReCaptcha
      * Provide an action to match against in verify()
      * This should be set per page.
      *
-     * @param mixed $action Expected action
+     * @param string $action Expected action
      *
      * @return ReCaptcha Current instance for fluent interface
      */
@@ -296,7 +297,7 @@ class ReCaptcha
      * Provide a threshold to meet or exceed in verify()
      * Threshold should be a float between 0 and 1 which will be tested as response >= threshold.
      *
-     * @param mixed $threshold Expected threshold
+     * @param float $threshold Expected threshold
      *
      * @return ReCaptcha Current instance for fluent interface
      */
@@ -310,7 +311,7 @@ class ReCaptcha
     /**
      * Provide a timeout in seconds to test against the challenge timestamp in verify().
      *
-     * @param mixed $timeoutSeconds Maximum time (seconds) elapsed since the challenge timestamp
+     * @param int $timeoutSeconds Maximum time (seconds) elapsed since the challenge timestamp
      *
      * @return ReCaptcha Current instance for fluent interface
      */

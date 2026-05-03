@@ -55,10 +55,10 @@ class RequestParameters
     /**
      * Initialise parameters.
      *
-     * @param mixed $secret   site secret
-     * @param mixed $response value from g-captcha-response form field
-     * @param mixed $remoteIp user's IP address
-     * @param mixed $version  version of this client library
+     * @param string      $secret   site secret
+     * @param string      $response value from g-recaptcha-response form field
+     * @param null|string $remoteIp user's IP address
+     * @param null|string $version  version of this client library
      */
     public function __construct($secret, $response, $remoteIp = null, $version = null)
     {

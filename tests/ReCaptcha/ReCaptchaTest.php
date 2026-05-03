@@ -124,20 +124,16 @@ class ReCaptchaTest extends TestCase
     public function testVerifyReturnsErrorOnNullResponse(): void
     {
         $rc = new ReCaptcha('secret');
+
+        /** @phpstan-ignore argument.type */
         $response = $rc->verify(null);
         $this->assertFalse($response->isSuccess());
         $this->assertEquals([ReCaptcha::E_MISSING_INPUT_RESPONSE], $response->getErrorCodes());
     }
 
-    public function testRequestMethodSubmitKeepsLegacyReturnTypeCompatibility(): void
-    {
-        $submit = new \ReflectionMethod(RequestMethod::class, 'submit');
-
-        $this->assertFalse($submit->hasReturnType());
-    }
-
     public function testLegacyRequestMethodImplementationWithoutReturnTypeCanBeUsed(): void
     {
+        // BC: Legacy custom RequestMethod implementations without strict return types should still work
         $method = new class implements RequestMethod {
             public function submit(RequestParameters $params)
             {
@@ -153,9 +149,11 @@ class ReCaptchaTest extends TestCase
 
     public function testNonStringRequestMethodResponseReturnsBadResponse(): void
     {
+        // Keep the 1.x compatibility path open for older custom RequestMethod implementations.
         $method = new class implements RequestMethod {
             public function submit(RequestParameters $params)
             {
+                // @phpstan-ignore return.type
                 return false;
             }
         };
@@ -165,6 +163,17 @@ class ReCaptchaTest extends TestCase
 
         $this->assertFalse($response->isSuccess());
         $this->assertEquals([ReCaptcha::E_BAD_RESPONSE], $response->getErrorCodes());
+    }
+
+    public function testObjectValuesDoNotCrashLegacySetters(): void
+    {
+        $method = $this->getMockRequestMethod('{"success": true, "hostname": ""}');
+        $rc = new ReCaptcha('secret', $method);
+
+        /** @phpstan-ignore argument.type */
+        $response = $rc->setExpectedHostname(new \stdClass())->verify('response');
+
+        $this->assertTrue($response->isSuccess());
     }
 
     public function testZeroAsStringIsValidSecret(): void
@@ -185,6 +194,8 @@ class ReCaptchaTest extends TestCase
     {
         $method = $this->getMockRequestMethod('{"success": true}');
         $rc = new ReCaptcha('secret', $method);
+
+        /** @phpstan-ignore argument.type */
         $response = $rc->verify(12345);
         $this->assertTrue($response->isSuccess());
     }
@@ -312,6 +323,8 @@ class ReCaptchaTest extends TestCase
     {
         $method = $this->getMockRequestMethod('{"success": true, "score": "0.9"}');
         $rc = new ReCaptcha('secret', $method);
+
+        /** @phpstan-ignore argument.type */
         $response = $rc->setScoreThreshold('0.5')->verify('response');
         $this->assertTrue($response->isSuccess());
     }

@@ -55,3 +55,25 @@ constructor argument forms, should be reserved for a major release.
 The `RequestMethod::submit()` interface intentionally keeps its 1.x-compatible
 native signature. Implementations are still expected to return the body of the
 reCAPTCHA response as a string.
+
+### 1.5.1 Compatibility Focus
+
+Release 1.5.1 restores 1.4.x compatibility and keeps the 1.5.0 reliability fixes.
+
+- Restored 1.x public API contracts by removing narrowing type hints and `readonly` modifiers from public non-final DTOs.
+- Kept custom `RequestMethod` implementations working without native return types.
+- Kept legacy input handling for compatibility.
+- Fixed deprecated `curl_close()` usage for PHP 8.5+.
+- Kept the cURL handle cleanup, HTTP/1.1 handling, and TLS verification changes.
+
+### BC Testing
+
+The test suite covers the backward compatibility cases below:
+
+- `testLegacyRequestMethodImplementationWithoutReturnTypeCanBeUsed()`: Custom implementations without strict return types.
+- `testNonStringRequestMethodResponseReturnsBadResponse()`: Non-string responses from custom implementations.
+- `testScalarResponseIsAccepted()`: Scalar inputs such as integers in `verify()`.
+- `testZeroAsStringIsValidResponse()`: The "0" response token.
+- `testVerifyReturnsErrorOnNullResponse()`: Null input handling.
+
+These tests document expected 1.x behavior.
